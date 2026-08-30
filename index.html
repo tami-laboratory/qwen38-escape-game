@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4e7cf">
+<title>明るい部屋からの脱出</title>
+<link rel="stylesheet" href="style.css">
+
+<style id="step2b-polish">
+  .modal-card,
+  #safe-modal .safe-card,
+  #hint-list {
+    color: #f7f3ea;
+  }
+  .modal-title,
+  .modal-body,
+  #safe-title,
+  #safe-feedback,
+  #hint-list li,
+  #message {
+    color: #f7f3ea !important;
+  }
+  .modal-art,
+  .safe-art {
+    min-height: 82px !important;
+    color: #fff !important;
+    background: rgba(255,255,255,.10) !important;
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .modal-help {
+    margin: -4px 0 10px;
+    font-size: 12px;
+    letter-spacing: .04em;
+    color: rgba(247,243,234,.75);
+    text-align: center;
+  }
+  .safe {
+    left: 57% !important;
+    top: 57% !important;
+    width: 16% !important;
+    height: 18% !important;
+    z-index: 6 !important;
+  }
+  .door { z-index: 3; }
+  .desk { z-index: 2; }
+  .safe-body {
+    overflow: visible;
+    border: 2px solid rgba(255,255,255,.12);
+  }
+  .safe-tag {
+    position: absolute;
+    left: 50%;
+    bottom: -24px;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: #243041;
+    background: rgba(255,255,255,.85);
+    box-shadow: 0 3px 8px rgba(0,0,0,.18);
+    white-space: nowrap;
+  }
+  .hint-head,
+  .hint-panel,
+  #btn-hint-close {
+    color: #f7f3ea;
+  }
+  #message {
+    background: rgba(20,18,28,.96) !important;
+  }
+</style>
+
+
+<style id="step2c-cleanup">
+  /* 調査モーダルはタイトルと説明文に集中させる */
+  #modal .modal-art {
+    display: none !important;
+  }
+  #modal .modal-card {
+    padding-top: 26px !important;
+  }
+  #modal .modal-title {
+    margin-top: 0 !important;
+  }
+
+  /* 金庫は本棚のそばの床置きにして、扉と重ねない */
+  .safe {
+    left: 29% !important;
+    top: 68% !important;
+    width: 14% !important;
+    height: 15% !important;
+    z-index: 4 !important;
+  }
+
+  .safe-tag {
+    bottom: -22px !important;
+  }
+
+  .door {
+    z-index: 3 !important;
+  }
+
+  @media (max-width: 520px) {
+    .safe {
+      left: 27% !important;
+      top: 69% !important;
+      width: 15% !important;
+      height: 14% !important;
+    }
+  }
+</style>
+
+
+<style id="step2d-shelf-safe">
+  /* 赤い本の背表紙に、手掛かりの数字4を実際に表示する */
+  .book.b1 {
+    position: relative;
+  }
+  .book.b1::after {
+    content: "4";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff7e8;
+    font-size: clamp(15px, 4vw, 25px);
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(70,30,20,.35);
+  }
+
+  /* 金庫モーダルの意味のない巨大装飾ダイヤルを消す */
+  #safe-modal .safe-art {
+    display: none !important;
+  }
+
+  /* 3桁入力を横並びにする */
+  #safe-modal .safe-card {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px !important;
+    align-items: start;
+  }
+
+  #safe-modal .modal-title,
+  #safe-modal .modal-body,
+  #safe-modal .safe-feedback,
+  #safe-modal .modal-actions {
+    grid-column: 1 / -1;
+  }
+
+  #safe-modal .modal-title {
+    margin: 0 0 4px !important;
+  }
+
+  #safe-modal .modal-body {
+    margin: 0 0 10px !important;
+    line-height: 1.6;
+  }
+
+  #safe-modal .dial {
+    position: relative !important;
+    display: grid !important;
+    grid-template-rows: 24px 48px 62px 48px;
+    gap: 6px !important;
+    justify-items: center;
+    align-items: center;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 10px 6px 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 14px;
+    background: rgba(255,255,255,.05);
+  }
+
+  #safe-modal .dial::before {
+    grid-row: 1;
+    font-size: 12px;
+    color: rgba(247,243,234,.76);
+  }
+
+  #safe-modal #dial::before { content: "1桁目"; }
+  #safe-modal #dial1::before { content: "2桁目"; }
+  #safe-modal #dial2::before { content: "3桁目"; }
+
+  #safe-modal .dial-btn.up {
+    grid-row: 2;
+  }
+
+  #safe-modal .dial-num {
+    grid-row: 3;
+    display: grid !important;
+    place-items: center;
+    width: 100%;
+    min-height: 58px;
+    border-radius: 12px;
+    font-size: 34px !important;
+    font-weight: 800;
+    line-height: 1;
+    color: #fff7e8 !important;
+    background: rgba(255,255,255,.09);
+    border: 1px solid rgba(255,255,255,.14);
+  }
+
+  #safe-modal .dial-btn.down {
+    grid-row: 4;
+  }
+
+  #safe-modal .dial-btn {
+    position: static !important;
+    width: 100% !important;
+    max-width: 72px;
+    height: 46px !important;
+    font-size: 20px !important;
+    color: #fff7e8 !important;
+    background: rgba(255,255,255,.08) !important;
+    border: 1px solid rgba(255,255,255,.18) !important;
+  }
+
+  #safe-modal .safe-feedback {
+    min-height: 24px;
+    margin: 2px 0 0;
+    text-align: center;
+  }
+
+  @media (max-width: 380px) {
+    #safe-modal .safe-card {
+      gap: 8px !important;
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+    #safe-modal .dial {
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+  }
+</style>
+
+
+<style id="step2e-revised">
+  .book.b1::after {
+    content: none !important;
+    display: none !important;
+  }
+</style>
+
+
+<style id="step2e-final">
+  .book.b1::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* 8:00。分針は12、時針は8を指す */
+  .hand.hour {
+    transform: translateX(-50%) rotate(240deg) !important;
+  }
+  .hand.minute {
+    transform: translateX(-50%) rotate(0deg) !important;
+  }
+</style>
+
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">🔑</span>
+        <div class="brand-text">
+          <h1>明るい部屋からの脱出</h1>
+          <p>3つの数字を集めて、扉を開けよう</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="btn-hint" class="btn btn-hint" type="button">💡 ヒント</button>
+        <button id="btn-reset" class="btn btn-reset" type="button">↺ リセット</button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div class="room" id="room">
+        <div class="room-bg"></div>
+
+        <!-- 窓 -->
+        <div class="hotspot window" id="hs-window" role="button" tabindex="0" aria-label="窓を調べる">
+          <div class="win-sky"></div>
+          <div class="win-sun"></div>
+          <div class="win-cloud c1"></div>
+          <div class="win-cloud c2"></div>
+          <div class="win-frame"></div>
+          <div class="win-bar v1"></div>
+          <div class="win-bar v2"></div>
+          <div class="win-bar h1"></div>
+          <div class="win-bar h2"></div>
+          <div class="win-sill"></div>
+        </div>
+
+        <!-- 時計 -->
+        <div class="hotspot clock" id="hs-clock" role="button" tabindex="0" aria-label="壁時計を調べる">
+          <div class="clock-face">
+            <div class="tick t12"></div><div class="tick t3"></div>
+            <div class="tick t6"></div><div class="tick t9"></div>
+            <div class="hand hour"></div>
+            <div class="hand minute"></div>
+            <div class="clock-center"></div>
+          </div>
+        </div>
+
+        <!-- 絵 -->
+        <div class="hotspot painting" id="hs-painting" role="button" tabindex="0" aria-label="絵を調べる">
+          <div class="paint-frame">
+            <div class="paint-sky"></div>
+            <div class="paint-hill"></div>
+            <div class="paint-sun"></div>
+            <div class="paint-note">♪</div>
+          </div>
+        </div>
+
+        <!-- 本棚 -->
+        <div class="hotspot shelf" id="hs-shelf" role="button" tabindex="0" aria-label="本棚を調べる">
+          <div class="shelf-board"></div>
+          <div class="books">
+            <span class="book b1"></span><span class="book b2"></span>
+            <span class="book b3"></span><span class="book b4"></span>
+            <span class="book b5"></span><span class="book b6"></span>
+            <span class="book b7"></span><span class="book b8"></span>
+          </div>
+        </div>
+
+        <!-- 机 -->
+        <div class="hotspot desk" id="hs-desk" role="button" tabindex="0" aria-label="机を調べる">
+          <div class="desk-top"></div>
+          <div class="desk-leg l"></div>
+          <div class="desk-leg r"></div>
+          <div class="desk-drawer"></div>
+          <div class="desk-knob"></div>
+        </div>
+
+        <!-- 金庫 -->
+        <div class="hotspot safe" id="hs-safe" role="button" tabindex="0" aria-label="金庫を調べる">
+          <div class="safe-body">
+            <div class="safe-dial"></div>
+            <div class="safe-handle"></div>
+            <div class="safe-keyhole"></div>
+            <div class="safe-tag">金庫</div>
+          </div>
+        </div>
+
+        <!-- 扉 -->
+        <div class="hotspot door" id="hs-door" role="button" tabindex="0" aria-label="扉を調べる">
+          <div class="door-frame">
+            <div class="door-panel">
+              <div class="door-window"></div>
+              <div class="door-handle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="inventory">
+      <div class="inv-label">🎒 かばん</div>
+      <div class="inv-slots" id="inv-slots">
+        <div class="inv-slot empty" id="slot-key" data-label="かぎ">
+          <span class="slot-icon">🔑</span>
+          <span class="slot-name">かぎ</span>
+        </div>
+        <div class="inv-slot empty" id="slot-note" data-label="メモ">
+          <span class="slot-icon">📝</span>
+          <span class="slot-name">メモ</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="message">
+      <div class="msg-icon">💬</div>
+      <p id="message" class="msg-text">部屋をタップして、手がかりを集めよう。</p>
+    </section>
+
+    <section class="hint-panel" id="hint-panel" hidden>
+      <div class="hint-head">
+        <span>💡 ヒント</span>
+        <button id="btn-hint-close" class="btn btn-close" type="button">閉じる</button>
+      </div>
+      <ol class="hint-list" id="hint-list"></ol>
+    </section>
+  </div>
+
+  <!-- 調査パネル -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-art" id="modal-art"></div>
+      <h2 class="modal-title" id="modal-title">タイトル</h2>
+      <p class="modal-body" id="modal-body">本文</p>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- 金庫 -->
+  <div class="modal" id="safe-modal" hidden>
+    <div class="modal-card safe-card" role="dialog" aria-modal="true" aria-labelledby="safe-title">
+      <div class="safe-art">
+        <div class="safe-dial big"></div>
+      </div>
+      <h2 class="modal-title" id="safe-title">金庫の暗証番号</h2>
+      <p class="modal-body">▲と▼で各桁の数字を変えて、3桁の暗証番号を合わせよう。</p>
+      <div class="dial" id="dial">
+        <button class="dial-btn up" data-pos="0" data-dir="1" type="button" aria-label="1桁目を上げる">▲</button>
+        <div class="dial-num" id="d0">0</div>
+        <button class="dial-btn down" data-pos="0" data-dir="-1" type="button" aria-label="1桁目を下げる">▼</button>
+      </div>
+      <div class="dial" id="dial1">
+        <button class="dial-btn up" data-pos="1" data-dir="1" type="button" aria-label="2桁目を上げる">▲</button>
+        <div class="dial-num" id="d1">0</div>
+        <button class="dial-btn down" data-pos="1" data-dir="-1" type="button" aria-label="2桁目を下げる">▼</button>
+      </div>
+      <div class="dial" id="dial2">
+        <button class="dial-btn up" data-pos="2" data-dir="1" type="button" aria-label="3桁目を上げる">▲</button>
+        <div class="dial-num" id="d2">0</div>
+        <button class="dial-btn down" data-pos="2" data-dir="-1" type="button" aria-label="3桁目を下げる">▼</button>
+      </div>
+      <p class="safe-feedback" id="safe-feedback"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="safe-close" type="button">閉じる</button>
+        <button class="btn btn-primary" id="safe-open" type="button">金庫を開ける</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- クリア -->
+  <div class="modal" id="win-modal" hidden>
+    <div class="modal-card win-card" role="dialog" aria-modal="true" aria-labelledby="win-title">
+      <div class="win-art">🎉</div>
+      <h2 class="modal-title" id="win-title">脱出成功！</h2>
+      <p class="modal-body">明るい部屋から抜け出したね。<br>よく頑張りました。</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="win-again" type="button">もう一度あそぶ</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
