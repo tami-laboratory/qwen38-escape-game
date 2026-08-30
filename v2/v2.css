@@ -1,0 +1,658 @@
+.v2-stage[hidden],
+.v2-modal[hidden],
+.v2-confetti[hidden] {
+  display: none !important;
+}
+
+.v2-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: #fff6e8;
+  background: #221625;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+}
+
+.v2-stage * {
+  box-sizing: border-box;
+}
+
+.v2-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 15px 16px 13px;
+  background: rgba(29, 16, 31, 0.95);
+  border-bottom: 1px solid rgba(255, 232, 201, 0.14);
+  backdrop-filter: blur(8px);
+}
+
+.v2-title {
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.v2-progress {
+  margin-bottom: 9px;
+  color: #f5d9aa;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.v2-msg {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 229, 193, 0.16);
+  border-radius: 12px;
+  color: #fff7ea;
+  background: rgba(255, 232, 201, 0.08);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* 壁65%、床35%の一つの部屋 */
+.v2-room {
+  position: relative;
+  width: 100%;
+  min-height: 760px;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      to bottom,
+      #5a3f50 0%,
+      #6a4b55 64%,
+      #b58a67 64%,
+      #9b704f 66%,
+      #8b6044 66%,
+      #755039 100%
+    );
+  box-shadow: inset 0 -24px 35px rgba(35, 18, 18, 0.16);
+}
+
+/* 夕方の窓 */
+.v2-room::before {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: 42px;
+  width: 116px;
+  height: 138px;
+  border: 9px solid #6d432d;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(255,246,220,.85) 47% 52%, transparent 52%),
+    linear-gradient(0deg, transparent 47%, rgba(255,246,220,.85) 47% 52%, transparent 52%),
+    linear-gradient(180deg, #f2a35d 0%, #e98368 42%, #86668c 100%);
+  box-shadow:
+    0 12px 18px rgba(34, 17, 20, 0.26),
+    inset 0 0 0 3px rgba(255, 238, 208, 0.42);
+}
+
+/* ラグ */
+.v2-room::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  width: 205px;
+  height: 78px;
+  transform: translateX(-50%) skewX(-8deg);
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(239, 190, 126, 0.16) 0 12px,
+      rgba(101, 47, 44, 0.13) 12px 24px
+    ),
+    #784645;
+  box-shadow: 0 12px 22px rgba(31, 15, 16, 0.28);
+}
+
+.v2-obj {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  touch-action: manipulation;
+}
+
+.v2-obj:focus-visible {
+  outline: 3px dashed #ffe099;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.v2-obj-art {
+  position: relative;
+}
+
+.v2-obj-name {
+  position: relative;
+  z-index: 3;
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #fff2de;
+  background: rgba(32, 15, 24, 0.82);
+  border: 1px solid rgba(255, 236, 210, 0.16);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 本棚：左側、床から立つ大型家具 */
+#v2-book {
+  left: 14px;
+  bottom: 82px;
+}
+
+#v2-book .v2-obj-art {
+  width: 105px;
+  height: 252px;
+  border: 7px solid #5e3823;
+  border-radius: 9px 9px 4px 4px;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0 28%,
+      #674127 28% 32%,
+      transparent 32% 61%,
+      #674127 61% 65%,
+      transparent 65% 94%,
+      #674127 94% 100%
+    ),
+    #8c603b;
+  box-shadow:
+    0 16px 20px rgba(38, 19, 18, 0.33),
+    inset 0 0 0 2px rgba(255, 222, 169, 0.12);
+}
+
+#v2-book .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  width: 75px;
+  height: 207px;
+  background:
+    linear-gradient(90deg,
+      #b84a3c 0 9px, transparent 9px 13px,
+      #4c86bb 13px 23px, transparent 23px 27px,
+      #d6b25f 27px 38px, transparent 38px 42px,
+      #836db7 42px 52px, transparent 52px 56px,
+      #549560 56px 68px, transparent 68px 75px
+    );
+  opacity: 0.95;
+}
+
+/* 机：中央床置き */
+#v2-desk {
+  left: 50%;
+  bottom: 70px;
+  transform: translateX(-50%);
+}
+
+#v2-desk .v2-obj-art {
+  width: 142px;
+  height: 128px;
+}
+
+#v2-desk .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 142px;
+  height: 28px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #a97545, #7e4e2c);
+  box-shadow: 0 7px 13px rgba(37, 19, 17, 0.28);
+}
+
+#v2-desk .v2-obj-art::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 43px;
+  width: 112px;
+  height: 80px;
+  background:
+    linear-gradient(90deg,
+      #6f4126 0 15px,
+      transparent 15px 96px,
+      #6f4126 96px 112px
+    );
+}
+
+/* 机上の白いメモ */
+#v2-desk {
+  filter: drop-shadow(0 10px 10px rgba(30, 15, 14, 0.12));
+}
+
+#v2-desk .v2-obj-name {
+  margin-top: -8px;
+}
+
+/* ランプ：机の左奥に接地 */
+#v2-lamp {
+  left: calc(50% - 54px);
+  bottom: 196px;
+  z-index: 8;
+}
+
+#v2-lamp .v2-obj-art {
+  width: 54px;
+  height: 82px;
+}
+
+#v2-lamp .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  width: 40px;
+  height: 30px;
+  clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, #ffd68c, #d9954f);
+  box-shadow: 0 0 30px rgba(255, 188, 93, 0.52);
+}
+
+#v2-lamp .v2-obj-art::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: 29px;
+  width: 5px;
+  height: 44px;
+  border-radius: 4px;
+  background: #8b6544;
+  box-shadow:
+    -14px 42px 0 8px #765036,
+    14px 42px 0 8px #765036;
+}
+
+/* BLUE：机の右上に置かれた小箱 */
+#v2-blue {
+  left: calc(50% + 27px);
+  bottom: 191px;
+  z-index: 9;
+}
+
+#v2-blue .v2-obj-art {
+  width: 56px;
+  height: 49px;
+  border: 4px solid #d9ebff;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #71b9ff, #347fc7);
+  box-shadow: 0 9px 12px rgba(26, 38, 65, 0.24);
+}
+
+#v2-blue .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+#v2-blue .v2-obj-art::after {
+  content: "BLUE";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7px;
+  color: #eef7ff;
+  font-size: 9px;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* 星3つの額：机の上の壁に掛ける */
+#v2-star {
+  left: 50%;
+  top: 82px;
+  transform: translateX(-50%);
+}
+
+#v2-star .v2-obj-art {
+  width: 126px;
+  height: 88px;
+  border: 8px solid #6b3f27;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #2f3558, #47436d);
+  box-shadow: 0 11px 17px rgba(34, 18, 25, 0.28);
+}
+
+#v2-star .v2-obj-art::before {
+  content: "★  ★  ★";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 20px;
+  color: #ffd96e;
+  font-size: 24px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(22, 19, 34, 0.35);
+}
+
+/* 金庫：本棚と机の間の床 */
+#v2-safe {
+  left: 24px;
+  bottom: 352px;
+}
+
+#v2-safe .v2-obj-art {
+  width: 82px;
+  height: 72px;
+  border: 5px solid #42464e;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #939ba5, #626873);
+  box-shadow: 0 12px 15px rgba(27, 20, 24, 0.3);
+}
+
+#v2-safe .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 17px;
+  width: 29px;
+  height: 29px;
+  border: 4px solid #363b43;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d5d9de, #828892);
+}
+
+/* 扉：右端の床から立ち上がる */
+#v2-door {
+  right: 10px;
+  bottom: 62px;
+}
+
+#v2-door .v2-obj-art {
+  width: 92px;
+  height: 282px;
+  border: 7px solid #4d2a18;
+  border-bottom-width: 10px;
+  border-radius: 8px 8px 2px 2px;
+  background:
+    linear-gradient(90deg,
+      rgba(255,255,255,.04) 0 7%,
+      transparent 7% 93%,
+      rgba(0,0,0,.10) 93% 100%
+    ),
+    linear-gradient(180deg, #84532f, #5b321d);
+  box-shadow: 0 16px 21px rgba(32, 17, 16, 0.34);
+}
+
+#v2-door .v2-obj-art::before {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 145px;
+  width: 13px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe18a, #d4a13e);
+}
+
+#v2-door .v2-obj-art::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 24px;
+  height: 78px;
+  border: 3px solid rgba(255, 218, 171, 0.19);
+  border-radius: 6px;
+}
+
+/* 下部UI */
+.v2-inv,
+.v2-hint,
+.v2-actions {
+  position: relative;
+  z-index: 10;
+  width: calc(100% - 24px);
+  margin: 0 auto 10px;
+}
+
+.v2-inv,
+.v2-hint {
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 232, 204, 0.12);
+  border-radius: 13px;
+  background: #35202f;
+}
+
+.v2-inv {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.v2-hint {
+  min-height: 61px;
+  color: #fff0d8;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.v2-actions {
+  display: flex;
+  gap: 10px;
+  padding-bottom: 16px;
+}
+
+.v2-btn {
+  appearance: none;
+  min-height: 50px;
+  flex: 1;
+  border: 2px solid rgba(255, 229, 193, 0.22);
+  border-radius: 15px;
+  color: #fff2df;
+  background: linear-gradient(180deg, #684429, #43291d);
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.v2-btn-primary {
+  color: #fff;
+  background: linear-gradient(180deg, #ed9e48, #ca6b24);
+}
+
+.v2-next-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+/* モーダル */
+.v2-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(15, 7, 16, 0.74);
+  backdrop-filter: blur(4px);
+}
+
+.v2-modal-card {
+  width: min(100%, 420px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 19px 17px 17px;
+  border: 1px solid rgba(255, 237, 214, 0.13);
+  border-radius: 20px;
+  color: #fff6e9;
+  background: #26182d;
+  box-shadow: 0 24px 52px rgba(0,0,0,.4);
+}
+
+.v2-modal-art {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 11px;
+  border-radius: 14px;
+  background: rgba(255, 228, 190, 0.08);
+  font-size: 27px;
+}
+
+.v2-modal-title {
+  margin-bottom: 9px;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.v2-modal-body {
+  margin-bottom: 17px;
+  color: #fff6e9;
+  font-size: 16px;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.v2-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.v2-modal-actions .v2-btn {
+  flex: 1 1 130px;
+}
+
+/* 金庫入力 */
+.v2-dials {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 13px;
+}
+
+.v2-dial-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.v2-dial-btn {
+  width: 55px;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,.17);
+  border-radius: 11px;
+  color: #fff1d8;
+  background: rgba(255,255,255,.08);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.v2-dial {
+  display: flex;
+  width: 55px;
+  height: 55px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  color: #291912;
+  background: #fff4e1;
+  font-size: 27px;
+  font-weight: 900;
+}
+
+.v2-safe-feedback {
+  min-height: 24px;
+  margin-bottom: 11px;
+  color: #ffe09c;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* クリア演出 */
+.v2-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.v2-confetti-piece {
+  position: absolute;
+  top: -18px;
+  width: 9px;
+  height: 17px;
+  animation: v2-room-fall 2.8s linear forwards;
+}
+
+.v2-confetti-piece:nth-child(4n+1) { background: #ff8e69; }
+.v2-confetti-piece:nth-child(4n+2) { background: #ffdf6e; }
+.v2-confetti-piece:nth-child(4n+3) { background: #83db9d; }
+.v2-confetti-piece:nth-child(4n+4) { background: #7fc2ff; }
+
+@keyframes v2-room-fall {
+  to {
+    transform: translateY(110vh) rotate(420deg);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 700px) {
+  .v2-room {
+    min-height: 820px;
+  }
+
+  .v2-room::before {
+    left: 12%;
+    width: 150px;
+    height: 165px;
+  }
+
+  #v2-book {
+    left: 9%;
+  }
+
+  #v2-safe {
+    left: 16%;
+  }
+
+  #v2-door {
+    right: 9%;
+  }
+
+  #v2-desk .v2-obj-art {
+    width: 180px;
+  }
+
+  #v2-lamp {
+    left: calc(50% - 72px);
+  }
+
+  #v2-blue {
+    left: calc(50% + 44px);
+  }
+}
